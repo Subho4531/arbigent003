@@ -144,11 +144,18 @@ const Vault = () => {
   if (!connected) {
     return (
       <div className="min-h-screen bg-background dark flex items-center justify-center">
-        <div className="text-center p-8 rounded-xl border border-border bg-card">
-          <Wallet className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-          <h2 className="text-2xl font-bold mb-2">Wallet Not Connected</h2>
-          <p className="text-muted-foreground">Connect your wallet to access the vault</p>
-        </div>
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-center p-10 rounded-3xl border border-border bg-card/80 backdrop-blur-sm shadow-xl"
+        >
+          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20 mx-auto mb-6">
+            <Wallet className="h-9 w-9 text-primary" />
+          </div>
+          <h2 className="text-2xl font-bold mb-3 font-display tracking-wide">Wallet Not Connected</h2>
+          <p className="text-muted-foreground text-lg">Connect your wallet to access the vault</p>
+        </motion.div>
       </div>
     );
   }
@@ -157,63 +164,65 @@ const Vault = () => {
     <div className="min-h-screen bg-background dark">
       <Header />
       
-      <main className="pt-24 pb-16">
+      <main className="pt-28 pb-16">
         <div className="container mx-auto px-4 lg:px-8">
           {/* Back Link */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <Link 
               to="/dashboard" 
-              className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-8"
+              className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-all duration-300 mb-8 group"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300" />
               Back to Dashboard
             </Link>
           </motion.div>
           
           {/* Page Header */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-8"
+            transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="mb-10"
           >
-            <div className="flex items-center gap-4 mb-2">
+            <div className="flex items-center gap-4 mb-3">
               <h1 className="font-display text-4xl lg:text-5xl font-bold tracking-wide text-foreground">
                 VAULT
               </h1>
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={refreshVault}
                 disabled={isLoading}
-                className="text-muted-foreground hover:text-primary"
+                className="text-muted-foreground hover:text-primary hover:border-primary/50 transition-all duration-300"
               >
                 <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
               </Button>
             </div>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-lg">
               Securely deposit and withdraw funds for your agents.
             </p>
           </motion.div>
 
           {/* Balance Cards */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10"
           >
-            {tokens.map((token) => (
-              <div
+            {tokens.map((token, index) => (
+              <motion.div
                 key={token.symbol}
-                className={`rounded-xl border p-5 transition-all cursor-pointer ${
+                whileHover={{ y: -4, scale: 1.01 }}
+                transition={{ duration: 0.3 }}
+                className={`rounded-2xl border p-6 transition-all duration-300 cursor-pointer ${
                   selectedToken === token.symbol 
-                    ? "border-primary bg-primary/5" 
-                    : "border-border bg-card hover:border-primary/50"
+                    ? "border-primary bg-primary/5 shadow-lg shadow-primary/10" 
+                    : "border-border bg-card hover:border-primary/50 hover:shadow-lg hover:shadow-black/5"
                 }`}
                 onClick={() => setSelectedToken(token.symbol)}
               >

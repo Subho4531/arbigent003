@@ -310,30 +310,32 @@ const PriceChart = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
-      className="rounded-2xl border border-border bg-card/90 backdrop-blur-md overflow-hidden"
+      initial={{ opacity: 0, y: 30, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="rounded-3xl border border-border bg-card/90 backdrop-blur-xl overflow-hidden shadow-xl shadow-black/10 hover:shadow-2xl hover:shadow-black/20 transition-shadow duration-500"
     >
       {/* Header */}
-      <div className="p-4 border-b border-border/50">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
+      <div className="p-5 border-b border-border/50">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
+              <TrendingUp className="h-4 w-4 text-primary" />
+            </div>
             <span className="font-display text-lg tracking-wide text-foreground">LIVE PRICE</span>
-            {isLoading && <RefreshCw className="h-3 w-3 animate-spin text-muted-foreground" />}
+            {isLoading && <RefreshCw className="h-3.5 w-3.5 animate-spin text-primary" />}
           </div>
-          <div className="flex items-center gap-2">
-            {/* <span className="text-xs text-muted-foreground mr-2">5min window • 3s refresh</span> */}
-            <Button variant="ghost" size="sm" onClick={handleZoomOut} className="h-7 w-7 p-0">
+          <div className="flex items-center gap-1.5">
+            <Button variant="ghost" size="sm" onClick={handleZoomOut} className="h-8 w-8 p-0 rounded-lg hover:bg-muted/70">
               <ZoomOut className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="sm" onClick={handleResetZoom} className="h-7 w-7 p-0">
+            <Button variant="ghost" size="sm" onClick={handleResetZoom} className="h-8 w-8 p-0 rounded-lg hover:bg-muted/70">
               <RotateCcw className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="sm" onClick={handleZoomIn} className="h-7 w-7 p-0">
+            <Button variant="ghost" size="sm" onClick={handleZoomIn} className="h-8 w-8 p-0 rounded-lg hover:bg-muted/70">
               <ZoomIn className="h-4 w-4" />
             </Button>
-            <span className="text-xs text-muted-foreground ml-1">{(zoomLevel * 100).toFixed(0)}%</span>
+            <span className="text-xs text-muted-foreground ml-2 bg-muted/50 px-2 py-1 rounded-md">{(zoomLevel * 100).toFixed(0)}%</span>
           </div>
         </div>
 
@@ -343,29 +345,32 @@ const PriceChart = () => {
             const change = getChangePercent(info);
             const isSelected = selectedToken === key;
             return (
-              <div
+              <motion.div
                 key={key}
                 onClick={() => setSelectedToken(key)}
-                className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className={`p-4 rounded-2xl border cursor-pointer transition-all duration-300 ${
                   isSelected 
-                    ? 'ring-2 ring-offset-2 ring-offset-background' 
-                    : 'opacity-60 hover:opacity-80'
+                    ? 'ring-2 ring-offset-2 ring-offset-background shadow-lg' 
+                    : 'opacity-60 hover:opacity-90'
                 }`}
                 style={{
-                  backgroundColor: `${info.color}${isSelected ? '20' : '10'}`,
-                  borderColor: `${info.color}${isSelected ? '80' : '40'}`,
-                  ringColor: isSelected ? info.color : undefined
+                  backgroundColor: `${info.color}${isSelected ? '15' : '08'}`,
+                  borderColor: `${info.color}${isSelected ? '60' : '30'}`,
+                  ringColor: isSelected ? info.color : undefined,
+                  boxShadow: isSelected ? `0 8px 24px ${info.color}20` : undefined
                 }}
               >
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <div
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: info.color }}
+                      className="w-3 h-3 rounded-full shadow-sm"
+                      style={{ backgroundColor: info.color, boxShadow: `0 0 8px ${info.color}60` }}
                     />
-                    <span className="text-xs font-bold" style={{ color: info.color }}>{key}</span>
+                    <span className="text-xs font-bold tracking-wide" style={{ color: info.color }}>{key}</span>
                   </div>
-                  <div className={`flex items-center gap-1 text-xs ${change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  <div className={`flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium ${change >= 0 ? 'text-green-400 bg-green-400/15' : 'text-red-400 bg-red-400/15'}`}>
                     {change >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                     <span>{change >= 0 ? '+' : ''}{change.toFixed(4)}%</span>
                   </div>
@@ -375,11 +380,11 @@ const PriceChart = () => {
                   initial={{ scale: 1.03, color: change >= 0 ? '#22c55e' : '#ef4444' }}
                   animate={{ scale: 1, color: info.color }}
                   transition={{ duration: 0.3 }}
-                  className="font-mono text-xl font-bold"
+                  className="font-mono text-xl font-bold tracking-tight"
                 >
                   ${info.price.toFixed(6)}
                 </motion.div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

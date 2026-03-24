@@ -17,12 +17,28 @@ import { useMarketData } from "@/hooks/useMarketData";
 import { apiService } from "@/services/ApiService";
 import useArbiGent from "@/hooks/useArbiGent";
 
-// Low-brightness animated background component (matches Vault.tsx style)
+// Enhanced animated background with subtle orbs
 const AnimatedBackground = () => (
-  <div className="fixed inset-0 pointer-events-none">
-    <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/[0.07] rounded-full blur-3xl animate-pulse" />
-    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-500/[0.07] rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-primary/[0.03] to-orange-500/[0.03] rounded-full blur-3xl" />
+  <div className="fixed inset-0 pointer-events-none overflow-hidden">
+    <motion.div 
+      animate={{ 
+        x: [0, 20, 0],
+        y: [0, -15, 0],
+      }}
+      transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      className="absolute -top-20 left-1/4 w-[400px] h-[400px] bg-primary/[0.06] rounded-full blur-[100px]" 
+    />
+    <motion.div 
+      animate={{ 
+        x: [0, -30, 0],
+        y: [0, 20, 0],
+      }}
+      transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+      className="absolute -bottom-20 right-1/4 w-[450px] h-[450px] bg-amber-500/[0.05] rounded-full blur-[120px]" 
+    />
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-radial from-primary/[0.03] via-transparent to-transparent rounded-full" />
+    {/* Subtle grid overlay */}
+    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.015)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,black_30%,transparent_100%)]" />
   </div>
 );
 
@@ -202,23 +218,24 @@ const Dashboard = () => {
       <div className="min-h-screen bg-background dark relative overflow-hidden">
         <AnimatedBackground />
         <Header />
-        <main className="pt-24 pb-16 relative z-10">
+        <main className="pt-32 pb-16 relative z-10">
           <div className="container mx-auto px-4 lg:px-8 text-center">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              className="font-display text-4xl lg:text-5xl font-bold tracking-wide text-foreground mb-4"
+              transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="max-w-md mx-auto"
             >
-              DASHBOARD
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-muted-foreground mb-8"
-            >
-              Please connect your wallet to access the dashboard.
-            </motion.p>
+              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20 mx-auto mb-6">
+                <Wallet className="h-9 w-9 text-primary" />
+              </div>
+              <h1 className="font-display text-4xl lg:text-5xl font-bold tracking-wide text-foreground mb-4">
+                DASHBOARD
+              </h1>
+              <p className="text-muted-foreground text-lg mb-8">
+                Please connect your wallet to access the dashboard.
+              </p>
+            </motion.div>
           </div>
         </main>
       </div>
@@ -244,40 +261,48 @@ const Dashboard = () => {
         onHide={() => setShowUpdateNotification(false)}
       />
 
-      <main className="pt-24 pb-16 relative z-10">
+      <main className="pt-28 pb-16 relative z-10">
         <div className="container mx-auto px-4 lg:px-8">
           {/* Page Header */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-8 flex items-center justify-between"
+            transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="mb-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           >
             <div>
-              <h1 className="font-display text-4xl lg:text-5xl font-bold tracking-wide text-foreground mb-2">
+              <motion.h1 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="font-display text-4xl lg:text-5xl font-bold tracking-wide text-foreground mb-3"
+              >
                 DASHBOARD
-              </h1>
-              <p className="text-muted-foreground">
+              </motion.h1>
+              <p className="text-muted-foreground text-lg">
                 Manage your autonomous trading agents.
               </p>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => fetchArbitrageStats(false)}
-              disabled={isLoadingStats}
-              className="text-primary mr-2"
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
             >
-              <RefreshCw className={`h-4 w-4 ${isLoadingStats ? 'animate-spin' : ''}`} />
-              Refresh Stats
-            </Button>
-
+              <Button
+                variant="outline"
+                size="default"
+                onClick={() => fetchArbitrageStats(false)}
+                disabled={isLoadingStats}
+                className="text-primary hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300"
+              >
+                <RefreshCw className={`h-4 w-4 ${isLoadingStats ? 'animate-spin' : ''}`} />
+                Refresh Stats
+              </Button>
+            </motion.div>
           </motion.div>
 
-
-
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
             <StatsCard
               icon={Wallet}
               label="Total Vault Balance"
@@ -359,23 +384,32 @@ const Dashboard = () => {
           </motion.div> */}
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-6"
+            transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="mb-8"
           >
-            <div className="rounded-xl border border-border bg-card p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-display text-xl font-bold tracking-wide text-foreground flex items-center gap-2">
-                  <Activity className="h-5 w-5 text-primary" />
+            <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-sm p-7 hover:border-primary/20 transition-all duration-500">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="font-display text-xl font-bold tracking-wide text-foreground flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
+                    <Activity className="h-5 w-5 text-primary" />
+                  </div>
                   ACTIVE AGENTS
                 </h2>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                   {isRunning && (
-                    <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-success/20 border border-success/30">
-                      <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                      <span className="text-xs font-mono text-success">RUNNING</span>
-                    </div>
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex items-center gap-2 px-4 py-2 rounded-full bg-success/15 border border-success/30 shadow-lg shadow-success/10"
+                    >
+                      <span className="relative flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success" />
+                      </span>
+                      <span className="text-xs font-mono font-semibold text-success tracking-wide">RUNNING</span>
+                    </motion.div>
                   )}
                   {/* <span className="text-sm text-muted-foreground">
                     {isRunning ? '1 Active' : '0 Active'}
@@ -403,44 +437,52 @@ const Dashboard = () => {
               {isRunning ? (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Agent Status Card */}
-                  <div className="rounded-lg border border-border bg-background/50 p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-success animate-pulse" />
-                        <span className="font-display font-bold text-foreground">ArbiGent #1</span>
+                  <motion.div 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    className="rounded-2xl border border-border bg-muted/30 backdrop-blur-sm p-5 hover:border-primary/30 transition-all duration-300"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <span className="relative flex h-3.5 w-3.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
+                          <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-success" />
+                        </span>
+                        <span className="font-display font-bold text-foreground text-lg">ArbiGent #1</span>
                       </div>
-                      <span className="text-xs text-muted-foreground">Running: {runningDuration}</span>
+                      <span className="text-xs text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">Running: {runningDuration}</span>
                     </div>
 
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
+                    <div className="space-y-3 text-sm">
+                      <div className="flex justify-between items-center p-2 rounded-lg bg-background/50">
                         <span className="text-muted-foreground">Strategy:</span>
-                        <span className="font-mono text-foreground">{agentConfig.selectedPair}</span>
+                        <span className="font-mono text-foreground font-medium">{agentConfig.selectedPair}</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center p-2 rounded-lg bg-background/50">
                         <span className="text-muted-foreground">Risk Level:</span>
-                        <span className="font-mono text-foreground">{agentConfig.riskTolerance}</span>
+                        <span className="font-mono text-foreground font-medium">{agentConfig.riskTolerance}</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center p-2 rounded-lg bg-background/50">
                         <span className="text-muted-foreground">Min Profit:</span>
-                        <span className="font-mono text-foreground">{agentConfig.minProfitThreshold.toFixed(4)}%</span>
+                        <span className="font-mono text-foreground font-medium">{agentConfig.minProfitThreshold.toFixed(4)}%</span>
                       </div>
                     </div>
 
                     {/* Performance Metrics */}
-                    <div className="mt-4 pt-3 border-t border-border">
-                      <div className="grid grid-cols-3 gap-3 text-center">
-                        <div>
-                          <p className="text-xs text-muted-foreground">Session Arbitrage</p>
-                          <p className="font-mono font-bold text-success">+${agentState.totalProfit.toFixed(2)}</p>
+                    <div className="mt-5 pt-4 border-t border-border">
+                      <div className="grid grid-cols-3 gap-4 text-center">
+                        <div className="p-3 rounded-xl bg-success/10 border border-success/20">
+                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Session P/L</p>
+                          <p className="font-mono text-lg font-bold text-success">+${agentState.totalProfit.toFixed(2)}</p>
                         </div>
-                        <div>
-                          <p className="text-xs text-muted-foreground">Trades</p>
-                          <p className="font-mono font-bold text-foreground">{agentState.tradesExecuted}</p>
+                        <div className="p-3 rounded-xl bg-muted/50">
+                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Trades</p>
+                          <p className="font-mono text-lg font-bold text-foreground">{agentState.tradesExecuted}</p>
                         </div>
-                        <div>
-                          <p className="text-xs text-muted-foreground">Success</p>
-                          <p className="font-mono font-bold text-primary">
+                        <div className="p-3 rounded-xl bg-primary/10 border border-primary/20">
+                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Success</p>
+                          <p className="font-mono text-lg font-bold text-primary">
                             {agentState.tradesExecuted > 0
                               ? ((agentState.tradesExecuted / (agentState.tradesExecuted + agentState.tradesSkipped)) * 100).toFixed(0)
                               : 0}%
@@ -451,37 +493,56 @@ const Dashboard = () => {
                   </div>
 
                   {/* Recent Activity */}
-                  <div className="rounded-lg border border-border bg-background/50 p-4">
-                    <h3 className="font-display font-bold text-foreground mb-3">Recent Activity</h3>
-                    <div className="space-y-2 max-h-32 overflow-y-auto">
-                      {logs.slice(-4).reverse().map((log, index) => (
-                        <div key={index} className="flex items-start gap-2 text-xs">
-                          <span className="text-muted-foreground whitespace-nowrap">[{log.time}]</span>
-                          <span className={`font-mono ${log.type === 'SUCCESS' ? 'text-success' :
-                              log.type === 'ERROR' ? 'text-destructive' :
-                                log.type === 'WARNING' ? 'text-warning' :
-                                  log.type === 'SCAN' ? 'text-primary' :
-                                    'text-muted-foreground'
-                            }`}>
+                  <motion.div 
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="rounded-2xl border border-border bg-muted/30 backdrop-blur-sm p-5"
+                  >
+                    <h3 className="font-display font-bold text-foreground mb-4 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                      Recent Activity
+                    </h3>
+                    <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-2">
+                      {logs.slice(-5).reverse().map((log, index) => (
+                        <motion.div 
+                          key={index} 
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                          className="flex items-start gap-3 text-xs p-2.5 rounded-lg bg-background/50 hover:bg-background/80 transition-colors"
+                        >
+                          <span className="text-muted-foreground whitespace-nowrap font-mono">{log.time}</span>
+                          <span className={`font-mono font-semibold px-2 py-0.5 rounded text-[10px] ${
+                            log.type === 'SUCCESS' ? 'text-success bg-success/15' :
+                            log.type === 'ERROR' ? 'text-destructive bg-destructive/15' :
+                            log.type === 'WARNING' ? 'text-warning bg-warning/15' :
+                            log.type === 'SCAN' ? 'text-primary bg-primary/15' :
+                            'text-muted-foreground bg-muted'
+                          }`}>
                             {log.type}
                           </span>
-                          <span className="text-foreground truncate">{log.message}</span>
-                        </div>
+                          <span className="text-foreground truncate flex-1">{log.message}</span>
+                        </motion.div>
                       ))}
                       {logs.length === 0 && (
-                        <p className="text-xs text-muted-foreground text-center py-2">No activity yet</p>
+                        <p className="text-sm text-muted-foreground text-center py-6">No activity yet</p>
                       )}
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted/50 mx-auto mb-4">
-                    <Shield className="h-8 w-8 text-muted-foreground" />
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-center py-12"
+                >
+                  <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-muted/50 mx-auto mb-5 border border-border">
+                    <Shield className="h-9 w-9 text-muted-foreground" />
                   </div>
-                  <p className="text-muted-foreground mb-2">No active agents</p>
-                  <p className="text-xs text-muted-foreground">Start an agent to begin autonomous trading</p>
-                </div>
+                  <p className="text-foreground font-medium mb-2">No active agents</p>
+                  <p className="text-sm text-muted-foreground">Start an agent to begin autonomous trading</p>
+                </motion.div>
               )}
             </div>
           </motion.div>
