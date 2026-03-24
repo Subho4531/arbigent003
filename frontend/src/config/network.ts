@@ -1,19 +1,41 @@
 import { Network } from '@aptos-labs/ts-sdk';
 
-// Network configuration interface
+/**
+ * Network Configuration Module
+ * 
+ * Provides configuration and utilities for managing Aptos network connections.
+ * Supports testnet, mainnet, and devnet with validation and switching capabilities.
+ * 
+ * @module config/network
+ */
+
+/**
+ * Network configuration interface
+ */
 export interface NetworkConfig {
+  /** Network name identifier */
   name: 'testnet' | 'mainnet' | 'devnet';
+  /** Chain ID for the network */
   chainId: string;
+  /** RPC endpoint URL */
   rpcUrl: string;
+  /** Optional faucet URL for testnet/devnet */
   faucetUrl?: string;
+  /** Optional block explorer URL */
   explorerUrl?: string;
+  /** Human-readable display name */
   displayName: string;
 }
 
-// API configuration interface
+/**
+ * API configuration interface
+ */
 export interface ApiConfig {
+  /** Backend API base URL */
   backendUrl: string;
+  /** External arbitrage API base URL */
   arbitrageApiUrl: string;
+  /** Request timeout in milliseconds */
   timeout: number;
 }
 
@@ -23,6 +45,10 @@ export const API_CONFIG: ApiConfig = {
   arbitrageApiUrl: import.meta.env.VITE_ARBITRAGE_API_URL || 'http://localhost:8000',
   timeout: 30000 // 30 seconds
 };
+
+// ============================================================
+// NETWORK CONFIGURATIONS
+// ============================================================
 
 // Aptos testnet configuration
 export const APTOS_TESTNET_CONFIG: NetworkConfig = {
@@ -63,7 +89,12 @@ export const NETWORK_CONFIGS: Record<string, NetworkConfig> = {
 // Default network configuration
 export const DEFAULT_NETWORK = APTOS_TESTNET_CONFIG;
 
-// Network validation utilities
+/**
+ * NetworkValidator class
+ * 
+ * Provides utilities for validating and inspecting network configuration.
+ * Used to ensure connected wallet is on the correct Aptos network.
+ */
 export class NetworkValidator {
   static isConnectedToTestnet(network: any): boolean {
     if (!network) return false;

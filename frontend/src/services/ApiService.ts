@@ -1,9 +1,25 @@
-// API Service for backend integration
+/**
+ * API Service Module
+ * 
+ * Handles all communication with the backend and external arbitrage API.
+ * Provides methods for user management, vault operations, and arbitrage analysis.
+ * 
+ * @module services/ApiService
+ */
+
 import { API_CONFIG } from '@/config/network';
 
+/**
+ * Standard API response wrapper
+ * 
+ * All API methods return this generic response format for consistent error handling.
+ */
 export interface ApiResponse<T> {
+  /** Whether the request was successful */
   success: boolean;
+  /** Response data if successful */
   data?: T;
+  /** Error message if unsuccessful */
   error?: string;
 }
 
