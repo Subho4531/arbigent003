@@ -35,36 +35,53 @@ const StatsCard = ({
 }: StatsCardProps) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay }}
-      className="rounded-xl border border-border bg-card p-5 hover:border-primary/30 transition-colors relative overflow-hidden"
+      initial={{ opacity: 0, y: 24, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ 
+        duration: 0.5, 
+        delay,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }}
+      whileHover={{ 
+        y: -4,
+        transition: { duration: 0.3, ease: "easeOut" }
+      }}
+      className="group rounded-2xl border border-border bg-card p-6 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-500 relative overflow-hidden"
     >
+      {/* Subtle gradient overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      
       {/* Loading shimmer effect */}
       {isLoading && (
-        <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+        <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-primary/5 to-transparent" />
       )}
       
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-sm text-muted-foreground">{label}</span>
+      <div className="relative z-10 flex items-center justify-between mb-4">
+        <span className="text-sm font-medium text-muted-foreground tracking-wide">{label}</span>
         <div className="flex items-center gap-2">
           {isUpdating && !isLoading && (
-            <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+            <motion.div 
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 1, repeat: Infinity }}
+              className="w-2 h-2 bg-primary rounded-full"
+            />
           )}
-          <Icon className={`h-5 w-5 transition-colors ${isLoading ? 'text-muted-foreground/50' : 'text-muted-foreground'}`} />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 group-hover:bg-primary/15 group-hover:border-primary/30 transition-all duration-300">
+            <Icon className={`h-4 w-4 transition-colors duration-300 ${isLoading ? 'text-muted-foreground/50' : 'text-primary'}`} />
+          </div>
         </div>
       </div>
       
-      <div className="flex items-end justify-between">
+      <div className="relative z-10 flex items-end justify-between">
         <div>
           {isLoading ? (
-            <div className="space-y-2">
-              <div className="h-8 bg-muted/50 rounded animate-pulse w-24" />
-              {subValue && <div className="h-4 bg-muted/30 rounded animate-pulse w-32" />}
+            <div className="space-y-3">
+              <div className="h-9 bg-muted/50 rounded-lg animate-pulse w-28" />
+              {subValue && <div className="h-4 bg-muted/30 rounded-md animate-pulse w-36" />}
             </div>
           ) : (
             <>
-              <p className="font-mono text-2xl font-bold text-foreground flex items-center gap-2">
+              <p className="font-mono text-3xl font-bold text-foreground flex items-center gap-2 tracking-tight">
                 {isAnimated && typeof value === 'number' ? (
                   <AnimatedValue 
                     value={Math.abs(value)} 
@@ -84,22 +101,30 @@ const StatsCard = ({
                 )}
               </p>
               {subValue && (
-                <p className="text-sm text-muted-foreground mt-1">{subValue}</p>
+                <p className="text-sm text-muted-foreground mt-2">{subValue}</p>
               )}
             </>
           )}
         </div>
         
         {trend && !isLoading && (
-          <div className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-mono ${
-            trend.isPositive ? "bg-success/20 text-success" : "bg-destructive/20 text-destructive"
-          }`}>
-            {trend.isPositive ? "↑" : "↓"} {trend.value}
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: delay + 0.2 }}
+            className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-mono font-semibold ${
+              trend.isPositive 
+                ? "bg-success/15 text-success border border-success/20" 
+                : "bg-destructive/15 text-destructive border border-destructive/20"
+            }`}
+          >
+            <span className="text-[10px]">{trend.isPositive ? "▲" : "▼"}</span>
+            {trend.value}
+          </motion.div>
         )}
         
         {isLoading && (
-          <div className="h-6 bg-muted/30 rounded-full animate-pulse w-16" />
+          <div className="h-7 bg-muted/30 rounded-full animate-pulse w-20" />
         )}
       </div>
     </motion.div>

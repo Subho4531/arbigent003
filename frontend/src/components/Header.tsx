@@ -43,18 +43,22 @@ const Header = () => {
     <motion.header 
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/95 backdrop-blur-xl"
+      transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-2xl supports-[backdrop-filter]:bg-background/60"
     >
-      <div className="container mx-auto flex h-16 items-center justify-between px-4 lg:px-8">
+      <div className="container mx-auto flex h-18 items-center justify-between px-4 lg:px-8">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="relative flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 border border-primary/30 group-hover:border-primary transition-colors">
+          <motion.div 
+            whileHover={{ scale: 1.05, rotate: -3 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/30 group-hover:border-primary/60 group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-300"
+          >
             <TrendingUp className="h-5 w-5 text-primary" />
-          </div>
+          </motion.div>
           <div className="flex flex-col">
-            <span className="font-display text-xl font-bold tracking-wide text-foreground">ARBIGENT</span>
-            <span className="text-[9px] uppercase tracking-widest text-muted-foreground">Agentic Arbitrage</span>
+            <span className="font-display text-xl font-bold tracking-wider text-foreground group-hover:text-primary transition-colors duration-300">ARBIGENT</span>
+            <span className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">Agentic Arbitrage</span>
           </div>
         </Link>
         
@@ -63,18 +67,25 @@ const Header = () => {
         
         {/* Desktop Navigation */}
         {!isLanding && (
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
-                className={`font-display text-sm tracking-wide transition-colors hover:text-primary ${
+                className={`relative px-4 py-2 font-display text-sm tracking-wide transition-all duration-300 rounded-lg ${
                   location.pathname === link.href 
-                    ? "text-primary" 
-                    : "text-muted-foreground"
+                    ? "text-primary bg-primary/10" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 }`}
               >
                 {link.label}
+                {location.pathname === link.href && (
+                  <motion.div
+                    layoutId="nav-indicator"
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                )}
               </Link>
             ))}
           </nav>
