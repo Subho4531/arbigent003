@@ -1,4 +1,17 @@
-// Error types for wallet operations
+/**
+ * Error Handling Utilities
+ * 
+ * Provides comprehensive error classification, formatting, and recovery mechanisms
+ * for wallet operations and API interactions.
+ * 
+ * @module utils/errorHandling
+ */
+
+/**
+ * Error types for wallet operations
+ * 
+ * Each error type maps to specific recovery actions and user-friendly messages.
+ */
 export enum WalletErrorType {
   WALLET_NOT_INSTALLED = 'WALLET_NOT_INSTALLED',
   USER_REJECTED = 'USER_REJECTED',
@@ -10,8 +23,14 @@ export enum WalletErrorType {
   UNKNOWN_ERROR = 'UNKNOWN_ERROR'
 }
 
-// Error messages mapping
-export const ERROR_MESSAGES: Record<WalletErrorType, string> = {
+// ============================================================
+// ERROR MESSAGES AND RECOVERY ACTIONS
+// ============================================================
+
+/**
+ * Error messages mapping
+ * Maps error types to user-friendly error messages
+ */
   [WalletErrorType.WALLET_NOT_INSTALLED]: 'Petra wallet is not installed. Please install it from the Chrome Web Store.',
   [WalletErrorType.USER_REJECTED]: 'Connection was rejected by user. Please try again and approve the connection.',
   [WalletErrorType.NETWORK_ERROR]: 'Network connection error. Please check your internet connection and try again.',
@@ -67,8 +86,17 @@ export const RECOVERY_ACTIONS: Record<WalletErrorType, string[]> = {
   ]
 };
 
-// Error classification function
-export function classifyError(error: Error | string): WalletErrorType {
+// ============================================================
+// ERROR CLASSIFICATION AND UTILITIES
+// ============================================================
+
+/**
+ * Classifies an error into a known WalletErrorType
+ * Uses pattern matching on error message to determine error category
+ * 
+ * @param error - The error to classify
+ * @returns The classified error type
+ */
   const errorMessage = typeof error === 'string' ? error : error.message;
   const lowerMessage = errorMessage.toLowerCase();
 

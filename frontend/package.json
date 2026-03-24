@@ -1,7 +1,10 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "arbigent-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "ArbiGent - Agentic Arbitrage Platform Frontend",
+  "author": "ArbiGent Team",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
